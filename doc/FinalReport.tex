@@ -1,0 +1,55 @@
+\documentclass[11pt]{article}
+%Gummi|061|=)
+\usepackage{hyperref}
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{pdfpages}
+\title{\textbf{Práctica sobre Arquitecturas: LogProcessor}}
+\author{Israel Pavón Maculet - Sergio Arroutbi Braojos}
+\selectlanguage{spanish}
+\date{\today}
+\usepackage[bottom=14em]{geometry}
+\usepackage{amsmath}
+\usepackage{mathtools}
+
+\begin{document}
+
+\hypersetup
+{   
+pdfborder={0 0 0}
+}
+   
+\maketitle
+
+\pagebreak
+
+\tableofcontents
+
+\pagebreak
+
+\section{Introducción}
+En esta práctica se pretende realizar el diseño arquitectónico de una solución de recolección de logs. En particular, se trata de diseñar un sistema que a partir de dos tipos de logs, logs de sistema y logs de aplicación, con sus respectivos formatos, distintos entre sí, se genere un único tipo de log que pueda ser analizado posteriormente.
+
+A priori, se generarán dos tipos de logs por parte de las aplicaciones y sistemas ya existentes. Posteriormente, dichos logs se recibirán por un sistema dedicado que los tratará de procesar a un único formato intermedio standard. Finalmente, habrá una etapa de análisis que permitirá realizar ciertas acciones en función del contenido del log en formato standard.
+
+Este documento no pretende describir la práctica, ya que su enunciado puede consultarse en el siguiente link:
+
+\url{https://drive.google.com/folderview?id=0BwwK87eKaiN_dlgzZ1pEamRwM1k&usp=sharing_eid&tid=0B2GOgs_VnHZuflF3bXJnUmZkTHdxbFJPNGNmZjE3SHhYWDljUC10eC12WE1nMXp2LXIxdU0}
+
+Se prentende más bien enunciar aquellas decisiones de diseño arquitectural llevadas a cabo, teniendo en cuenta el tipo de aplicación que se pide, el patrón o conjunto de patrones arquitectónicos que se pueden aplicar para obtener llegar a una solución y las iteraciones realizadas hasta afinar la arquitectura seleccionada.
+
+\pagebreak
+
+\section{Justificación sobre la elección de la arquitectura}
+
+
+
+\pagebreak
+
+\section{Documentación: Modelo de 4+1 vistas}
+
+\pagebreak
+
+\section{Implementación}
+
+\end{document}
