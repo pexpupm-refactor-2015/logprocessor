@@ -1,5 +1,5 @@
 SRC=$(wildcard src/*.cpp src/*.cc)
-BIN_FILE=LogProcessor
+BIN_FILE=LogGenerator
 CC=g++
 CCFLAGS=-std=c++11
 INCLUDE_FILES=

@@ -1,10 +1,11 @@
-SUBDIRS=$(wildcard LogProcessor/)
+SUBDIRS=$(wildcard Log*/)
 
-all: $(SUBDIRS)
-	@echo "SUBDIRS:$(SUBDIRS)"
-	make -C $<
+all:
+	@for dir in $(SUBDIRS); do \
+        $(MAKE) -C $$dir; \
+	done
 
 clean: $(SUBDIRS)
-	@echo "SUBDIRS:$(SUBDIRS)"
-	make clean -C $<
-	rm -rf *~
+	@for dir in $(SUBDIRS); do \
+        $(MAKE) clean -C $$dir; \
+	done	
