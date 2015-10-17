@@ -15,11 +15,16 @@
 #include "StdLine2StandardLog.h"
 #include "ConfigFile2AnalyzerData.h"
 
+void usage()
+{
+  std::cout << "usage: LogAnalyzer -f <configurationFile>" << std::endl;
+}
+
 int main (int argc, char **argv)
 {
   int c;
   std::string confFile("default.cfg");
-  while ((c = getopt (argc, argv, "f:")) != -1)
+  while ((c = getopt (argc, argv, "hf:")) != -1)
   {
     switch (c)
     {
@@ -29,31 +34,32 @@ int main (int argc, char **argv)
       std::cout << "<configurationFile> = [" << confFile << "]" << std::endl;
       break;
     }
+    case 'h':
+    {
+      usage();
+      exit(0);
+    }
     default:
     {
-      std::cout << "usage: LogAnalyzer -f <configurationFile>" << std::endl;
+      usage();
       std::cout << "using default [" << confFile << "]" << std::endl;
-    }
       break;
+    }
     }
   }
   std::cout << "LOG ANALYZER START" << std::endl;
   std::cout << "<configurationFile> = [" << confFile << "]" << std::endl;
 
   LogAnalyzerData config = ConfigFile2AnalyzerData::getData(confFile);
-  LogReceiver recevier("logAnalyzer");
-  LogAnalyzer analycer(config);
+  LogReceiver receiver("logAnalyzer");
+  LogAnalyzer analyzer(config);
   StdLine2StandardLog processor;
 
   while (true)
   {
-    std::string log = recevier.recvLog();
+    std::string log = receiver.recvLog();
     StandardLog stdLog = processor.generate(log);
-    analycer.analyzeLog(stdLog);
+    analyzer.analyzeLog(stdLog);
   }
-
   std::cout << "LOG ANALYZER END" << std::endl;
 }
-
-
-
