@@ -115,6 +115,23 @@ En este apartado se detalla el modelo de 4+1 vistas. Este modelo, diseñado por 
 
 A continuación se muestran las distintas vistas que propone este modelo para la solución propuesta.
 
+\subsection{Vista de Escenario}
+
+Esta vista, también conocida como vista de casos de uso, permite establecer aquellos casos de uso que presenta el sistema.
+Teniendo en cuenta los límites del sistema, que abarcan tanto la generación de logs de aplicación y de sistema, la comunicación con el procesador de logs para el envío de estos, el procesado por parte de éste para la generación de logs estandard y el posterior envío de éstos para enviarlos a los analizadores, se puede establecer que el actor principal dentro del sistema serán las aplicaciones que generan los logs.
+Así, se identifica un único caso de uso del sistema, esto es, una única especificación de secuencia de acciones, variaciones incluidas, que el sistema realiza y que dan un resultado observable de interés, que es, ni más ni menos, la generación de una serie de acciones por parte de un analizador de logs en función de una configuración.
+Dicho esto, el siguiente diagrama permite mostrar el caso de uso del sistema:
+
+\begin{center}
+ \begin{figure}[H]
+ \begin{center}
+   \includegraphics[width=15cm]{img/use_case00.png}
+   \caption{Vista de Escenario: Caso de Uso}
+   \label{fig:4plus1views}
+ \end{center}
+ \end{figure}
+\end{center}
+
 \subsection{Vista Lógica}
 
 En esta vista se debe incluir informacion que permita detallar la funcionalidad que el sistema proporciona de cara al usuario final. Para ello se deben incluir diagramas de clases, de comunicacion y/o de secuencia.
@@ -199,8 +216,6 @@ Así, para esta solución se propone el siguiente diagrama de despliegue:
 \end{center}
 \end{landscape}
 \restoregeometry
-
-\subsection{Vista de Escenario}
 
 \pagebreak
 
