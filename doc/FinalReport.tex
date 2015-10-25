@@ -45,6 +45,12 @@ Este documento no pretende describir la práctica, ya que su enunciado puede con
 
 Se prentende más bien enunciar aquellas decisiones de diseño arquitectural llevadas a cabo, teniendo en cuenta el tipo de aplicación que se pide, el patrón o conjunto de patrones arquitectónicos que se pueden aplicar para obtener llegar a una solución y las iteraciones realizadas hasta afinar la arquitectura seleccionada.
 
+Para ello, en primer lugar, se realizará una justificación de qué arquitectura de software es la elegida para llevar a cabo la solución al problema propuesto, enumerando las Fuerzas, Consecuencias y Responsabilidades de la elección del patrón arquitectural.
+
+Posteriormente, para realizar el análisis previo de la solución, se detallará la documentación de la arquitectura, para lo que se realizarán diversos diagramas que permitirán mostrar un modelo de 4+1 vistas que permita documentar la solución al sistema.
+
+Finalmente, se enumerarán aquellos detalles de la implementación dignos de mención, en relación a los diversos componentes implementados dentro de la solución, su justificación y también aquellas posibles mejoras que se puedan llevar a cabo en un futuro para robustecer el sistema.
+
 \pagebreak
 
 \section{Justificación sobre la elección de la arquitectura}
@@ -220,5 +226,63 @@ Así, para esta solución se propone el siguiente diagrama de despliegue:
 \pagebreak
 
 \section{Implementación}
+
+En este apartado se pretende resumir cómo se ha realizado la implementación del código de la solución.
+
+En primer lugar, destacar que el lenguaje utilizado en la implementación ha sido C++. En cuanto en el estudio arquitectónico surgió la necesidad de usar el patrón broker, se decidió emplear la comunicación entre procesos a traves de rabbit-mq, dado que este sistema de colas permite implementar de forma sencilla la topología de comunicaciones que se había planteado en la arquitectura, esto es:
+\\
+\\
+\textbf{N generadores de log - 1 Procesador de Logs - N Analizadores de Logs}
+\\
+\\
+A continuación se detallan cada uno de los componentes.
+
+\subsection{Componente LogGenerator}
+
+Este componente en un "fake" de un cliente del sistema de logs, cuyo objetivo es poder alimentar con logs no reales al sistema de forma que se facilite la realización de pruebas.
+
+Se compone de un main loop en el que se envían a una cola de rabbit-mq una serie de logs predefinidos una y otra vez.
+
+\underline{Posible mejora:} El proceso podría ser parametrizable para leer de fichero los logs a enviar, con lo que aportaría más flexibilidad a las pruebas, sin necesidad de recompilar.
+
+\subsection{Componente LogProcessor}
+
+Este componente implementa la funcionalidad de procesado de logs de la aplicación. Recibe por una cola de rabbit-mq una serie de logs, a los que aplica una serie de "filtros" para su proceso:
+\begin{itemize}
+\item{Identificación}: indentifica el tipo de log, para mandarlo a un filtro dedicado para cada tipo.
+Transformación a estandard log Consiste en la aplicación de varios filtros en función del tipo de log:
+\item{Log de sistema}
+\begin{itemize}
+\item{Filtro "tokenizador" de palabras.}
+\item{Filtro que convierte la severidad del log del sistema al formato del log estandard.}
+\item{Filtro que descarta las palabras menores de 4 letras.}
+\end{itemize}
+\item{Log de aplicación}
+\begin{itemize}
+\item{Filtro "tokenizador" de palabras.}
+\item{Filtro que descarta las palabras menores de 4 letras.}
+\end{itemize}
+\end{itemize}
+
+La salida de este filtro es ya un log de tipo estandard, que se envía a 2 filtros diferentes:
+
+\begin{itemize}
+\item{Filtro para su escritura en el fichero "standard.log" con el formato adecuado.}
+\item{Envío por rabbit-mq al filtro de análisis, que se encuentra en otros procesos.}
+\end{itemize}
+
+Todos los pipes internos a esta fase se han implementado como llamadas directas a métodos de clases, por motivos de rapidez y simplicidad de implementación, pero podrían haberse creados colas internas o externas, para desacoplarlo más y que modificar alguno de estos filtros de manera independiente fuera aún más sencillo.
+
+\subsection{Componente LogAnalyzer}
+
+Este componente implementa el "filtro analizador" dentro del "pipe" general.
+
+Se trata de un proceso configurable por fichero, en el que se le indica el fichero en el que debe guardar los logs analizados, y el conjunto de palabras clave que debe buscar en el flujo de logs standard, que recibe desde una cola de rabbit-mq.
+
+De esta forma, se pueden instanciar N analizadores que procesan los logs estandard en paralelo, cada uno con su fichero dedicado y su set de palabras clave, pudiendo reiniciar cualquiera de estos analizadores sin afectar al resto del sistema.
+
+Esta implementado de tal manera que si en lugar de la cola de rabbit-mq se deseara que leyera los logs de entrada por fichero (standard.log), fuera sencillo cambiarlo.
+
+\underline{Posible mejora:} Una posible mejora de la arquitectura una vez realzada la implementación sería la de sacar las clases comunes que tienen los componentes a uno o dos componentes nuevos. Por ejemplo, un componente para el envío y recepción de logs y otro componente para el manejo de logs estandard.
 
 \end{document}
